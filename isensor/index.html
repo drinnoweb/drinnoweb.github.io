@@ -34,7 +34,7 @@
         }
         
         function init_controller() {
-            $('#status').html("Connecting");
+            $('#status').html("Connecting to " + $('#host').val() + "...");
             
             var ws = new WebSocket($('#host').val());
             
