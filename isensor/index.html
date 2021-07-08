@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>iSensor</title>
+    <script
+  src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+  integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+    <h1>iSensor</h1>
+  
+    <input type="text" id="host"></input>
+    
+    <p>
+    <button onclick="start_controller()">Connect!</button>
+    </p>
+    
+    <script>       
+        function start_controller() {
+            DeviceMotionEvent.requestPermission().then(response => {
+                if (response == 'granted') {
+                    DeviceOrientationEvent.requestPermission().then(response => {
+                        if (response == 'granted') {
+                            init_controller();
+                        }
+                    });
+                }
+            });
+        }
+        
+        function init_controller() {
+            var ws = new WebSocket($('#host').val());
+            
+            ws.onmessage = function (evt) { 
+                var received_msg = evt.data;
+                alert("Message is received...:" + received_msg);
+            };
+            
+            ws.onopen = function() {
+                ws.send('hello');
+                
+                window.addEventListener("devicemotion", function(evt) {
+                    var obj = {
+                        acc: evt.acceleration,
+                        accg: evt.accelerationIncludingGravity
+                    };
+
+                  });
+
+                window.addEventListener("deviceorientation", function(evt) {
+                    var obj = {
+                              alpha: evt.alpha,
+                              beta: evt.beta,
+                              gamma: evt.gamma,
+                              compass: evt.webkitCompassHeading,
+                              compassacc: evt.webkitCompassAccuracy
+                    };
+                    
+                });
+            }
+        };
+    </script>
+</body>
+</html>
