@@ -16,6 +16,10 @@
     <button onclick="start_controller()">Connect!</button>
     </p>
     
+    <div id="status">
+        Disconnected
+    </div>
+    
     <script>       
         function start_controller() {
             DeviceMotionEvent.requestPermission().then(response => {
@@ -30,6 +34,8 @@
         }
         
         function init_controller() {
+            $('#status').html("Connecting");
+            
             var ws = new WebSocket($('#host').val());
             
             ws.onmessage = function (evt) { 
@@ -38,6 +44,8 @@
             };
             
             ws.onopen = function() {
+                $('#status').html("Connected");
+                
                 ws.send('hello');
                 
                 window.addEventListener("devicemotion", function(evt) {
@@ -58,8 +66,8 @@
                     };
                     
                 });
-            }
-        };
+            };
+        }
     </script>
 </body>
 </html>
